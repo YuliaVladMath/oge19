@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ОГЭ №19 Экзамен-тренажёр</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+.container{
+width:92%;
+max-width:800px;
+background:rgba(0,0,0,0.6);
+padding:25px;
+border-radius:18px;
+box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+
+h1{
+text-align:center;
+font-size:30px;
+margin:0;
+}
+
+.sub{
+text-align:center;
+opacity:0.8;
+margin-bottom:15px;
+}
+
+.info{
+display:flex;
+justify-content:space-between;
+margin:10px 0 20px;
+font-size:16px;
+opacity:0.9;
+}
+
+.card{
+background:rgba(255,255,255,0.08);
+padding:25px;
+border-radius:16px;
+text-align:center;
+}
+
+.task{
+font-size:26px;
+font-weight:bold;
+margin-bottom:20px;
+line-height:1.4;
+}
+
+button{
+padding:14px 18px;
+margin:8px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+font-weight:bold;
+font-size:16px;
+transition:0.2s;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+.yes{background:#00c896;color:white}
+.no{background:#ff4d4d;color:white}
+
+.result{
+margin-top:15px;
+font-size:24px;
+font-weight:bold;
+padding:12px;
+border-radius:12px;
+display:none;
+}
+
+.correct{
+background:rgba(0,255,150,0.2);
+color:#00ffb3;
+border:2px solid #00ffb3;
+}
+
+.wrong{
+background:rgba(255,80,80,0.2);
+color:#ff6b6b;
+border:2px solid #ff6b6b;
+}
+
+.end{
+text-align:center;
+font-size:24px;
+margin-top:20px;
+line-height:1.5;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Юлия Владимировна</h1>
+<div class="sub">Экзамен-тренажёр №19 ОГЭ (ФИПИ-стиль)</div>
+
+<div class="info">
+<div id="progress">1 / 117</div>
+<div id="timer">⏱ 00:00</div>
+<div id="score">Баллы: 0</div>
+</div>
+
+<div class="card">
+
+<div class="task" id="task"></div>
+
+<button class="yes" onclick="answer(true)">✔ Верно</button>
+<button class="no" onclick="answer(false)">✖ Неверно</button>
+
+<div id="result" class="result"></div>
+
+<div id="end" class="end"></div>
+
+</div>
+</div>
+
+<script>
+
+// ---------- ФИПИ-тип задания №19 ----------
+function gen(i){
+let t=i%5;
+
+if(t===0) return {text:"Сумма углов треугольника равна 180°.",answer:true};
+if(t===1) return {text:"Через точку вне прямой можно провести две параллельные прямые.",answer:false};
+if(t===2) return {text:"Вертикальные углы равны.",answer:true};
+if(t===3) return {text:"Диагонали прямоугольника равны.",answer:true};
+
+return {text:"Сумма внешних углов любого многоугольника равна 360°.",answer:true};
+}
+
+// ---------- 117 заданий ----------
+let tasks=[];
+for(let i=1;i<=117;i++){
+let x=gen(i);
+if(i%11===0) x.answer=false;
+tasks.push(x);
+}
+
+let index=0;
+let score=0;
+let wrong=0;
+
+// ---------- таймер ----------
+let sec=0;
+setInterval(()=>{
+sec++;
+let m=Math.floor(sec/60);
+let s=sec%60;
+document.getElementById("timer").innerText=
+`⏱ ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+},1000);
+
+function show(){
+if(index>=tasks.length){
+finish();
+return;
+}
+
+document.getElementById("task").innerText=tasks[index].text;
+document.getElementById("progress").innerText=`${index+1} / 117`;
+document.getElementById("score").innerText=`Баллы: ${score}`;
+
+document.getElementById("result").style.display="none";
+}
+
+function answer(v){
+let res=document.getElementById("result");
+
+if(v===tasks[index].answer){
+score++;
+res.innerText="✔ ВЕРНО";
+res.className="result correct";
+}else{
+wrong++;
+res.innerText="✖ НЕВЕРНО";
+res.className="result wrong";
+}
+
+res.style.display="block";
+setTimeout(()=>{index++;show();},600);
+}
+
+function finish(){
+document.querySelector(".card").innerHTML=
+`<div class="end">
+🎯 Экзамен завершён<br><br>
+✔ Правильных: ${score}<br>
+✖ Ошибок: ${wrong}<br>
+📊 Результат: ${Math.round((score/117)*100)}%
+</div>`;
+}
+
+show();
+
+</script>
+
+</body>
+</html>
